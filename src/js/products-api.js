@@ -15,3 +15,11 @@ export async function getProducts(currentPage) {
     const { data } = await axios(`?limit=${ITEMS_PER_PAGE}&skip=${skip}`);
     return data;
 }
+
+export async function getOneCategory(category, currentPage) {
+    const skip = (currentPage - 1) * ITEMS_PER_PAGE;
+
+    const { data } = await axios(`${API_ENDPOINTS.CATEGORY}/${category}?limit=${ITEMS_PER_PAGE}&skip=${skip}`);
+
+    return data;
+}
