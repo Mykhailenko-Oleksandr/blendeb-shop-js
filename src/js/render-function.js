@@ -24,3 +24,7 @@ export function renderCategories(categories) {
 
     refs.categoriesList.insertAdjacentHTML('beforeend', markup);
 }
+
+export function clearProducts() {
+    refs.productsList.innerHTML = '';
+}
