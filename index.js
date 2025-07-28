@@ -1,14 +1,14 @@
-import"./assets/styles-JE8YjOlG.js";import{a as e}from"./assets/vendor-N5iQpiFS.js";const p="https://dummyjson.com/products",l={CATEGORIES:"/category-list"},r=12;e.defaults.baseURL=p;async function _(){return(await e(`${l.CATEGORIES}`)).data}async function g(t){const s=(t-1)*r,{data:o}=await e(`?limit=${r}&skip=${s}`);return o}const a={categoriesList:document.querySelector(".categories"),productsList:document.querySelector(".products")};function m(t){const s=t.map(({id:o,thumbnail:n,title:c,brand:i,category:d,price:u})=>`
+import"./assets/styles-JE8YjOlG.js";import{a}from"./assets/vendor-N5iQpiFS.js";function y(t){const e=document.querySelectorAll(".categories__btn");Array.from(e).forEach(o=>{o.classList.remove(`${t}`),console.dir(o)})}const f="https://dummyjson.com/products",l={CATEGORIES:"/category-list",CATEGORY:"/category"},c=12;a.defaults.baseURL=f;async function L(){return(await a(`${l.CATEGORIES}`)).data}async function p(t){const e=(t-1)*c,{data:o}=await a(`?limit=${c}&skip=${e}`);return o}async function $(t,e){const o=(e-1)*c,{data:s}=await a(`${l.CATEGORY}/${t}?limit=${c}&skip=${o}`);return s}const r={categoriesList:document.querySelector(".categories"),productsList:document.querySelector(".products"),divNotFound:document.querySelector(".not-found")};function i(t){const e=t.map(({id:o,thumbnail:s,title:u,brand:g,category:_,price:m})=>`
     <li class="products__item" data-id="${o}">
-    <img class="products__image" src="${n}" alt="${c}"/>
-    <p class="products__title">${c}</p>
-    <p class="products__brand"><span class="products__brand--bold">Brand:</span>${i}</p>
-    <p class="products__category">Category: ${d}</p>
-    <p class="products__price">Price: $${u}</p>
+    <img class="products__image" src="${s}" alt="${u}"/>
+    <p class="products__title">${u}</p>
+    <p class="products__brand"><span class="products__brand--bold">Brand:</span>${g}</p>
+    <p class="products__category">Category: ${_}</p>
+    <p class="products__price">Price: $${m}</p>
  </li>
- `).join("");a.productsList.insertAdjacentHTML("beforeend",s)}function y(t){const s=t.map(o=>`
+ `).join("");r.productsList.insertAdjacentHTML("beforeend",e)}function b(t){const e=t.map(o=>`
     <li class="categories__item">
    <button class="categories__btn" type="button">${o}</button>
  </li>
-    `).join("");a.categoriesList.insertAdjacentHTML("beforeend",s)}let $=1;async function b(){try{const{products:t,total:s}=await g($);m(t)}catch(t){console.log(t)}try{const t=["All",...await _()];y(t)}catch(t){console.log(t)}}document.addEventListener("DOMContentLoaded",b);
+    `).join("");r.categoriesList.insertAdjacentHTML("beforeend",e)}function n(){r.productsList.innerHTML=""}let d=1;async function C(){try{const{products:t,total:e}=await p(d);i(t)}catch(t){console.log(t)}try{const t=["all",...await L()];b(t)}catch(t){console.log(t)}}async function E(t){if(t.target.tagName!=="BUTTON")return;r.divNotFound.classList.remove("not-found--visible"),y("categories__btn--active"),t.target.classList.add("categories__btn--active");const e=t.target.textContent;if(e==="all"){n();try{const{products:o,total:s}=await p(d);i(o)}catch(o){console.log(o)}return}try{const{products:o,total:s}=await $(e,d);if(s===0){n(),r.divNotFound.classList.add("not-found--visible");return}n(),i(o)}catch(o){console.log(o)}}document.addEventListener("DOMContentLoaded",C);r.categoriesList.addEventListener("click",E);
 //# sourceMappingURL=index.js.map
