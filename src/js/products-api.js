@@ -23,3 +23,14 @@ export async function getOneCategory(category, currentPage) {
 
     return data;
 }
+
+export async function getIdProduct(id) {
+    const results = await axios(`/${id}`);
+    return results.data;
+}
+
+export async function getSearchProduct(search, currentPage) {
+    const skip = (currentPage - 1) * ITEMS_PER_PAGE;
+    const data = await axios(`${API_ENDPOINTS.SEARCH}?q=${search}&limit=${ITEMS_PER_PAGE}&skip=${skip}`);
+    return data.data
+}
