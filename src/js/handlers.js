@@ -3,7 +3,7 @@ import { modalClose, modalOpen, } from "./modal";
 import { getCategories, getIdProduct, getOneCategory, getProducts, getSearchProduct } from "./products-api";
 import { refs } from "./refs";
 import { clearProducts, renderCategories, renderModalProduct, renderProducts } from "./render-function";
-import { getStorage, setStorage } from "./storage";
+import { idProductArr, setStorage } from "./storage";
 
 let currentPage = 1;
 let textCategory = 'all';
@@ -11,8 +11,8 @@ let isSearch = false;
 let searchValue = null;
 let idProduct = null;
 
-
 export async function initHomePage() {
+    refs.navCountWishlist.textContent = idProductArr.length;
     try {
         const { products, total } = await getProducts(currentPage);
         renderProducts(products);
@@ -123,7 +123,7 @@ export async function handlerProductsList(event) {
     try {
         const product = await getIdProduct(idProduct);
         renderModalProduct(product);
-        modalOpen();
+        modalOpen(idProduct);
         refs.modalCloseBtn.addEventListener('click', modalClose);
         refs.modalWishlistBtn.addEventListener('click', onModalWishlistBtnClick)
     } catch (error) {
@@ -178,19 +178,6 @@ export async function handlerformBtnClearValue() {
     }
 }
 
-// function onModalWishlistBtnClick(event) {
-//     refs.modalWishlistBtn.textContent = 'Remove from Wishlist';
-//     const idProductArr = [];
-
-//     console.log(getStorage());
-//     const qqqq = getStorage()
-//     console.log('qqqq', qqqq);
-
-//     idProductArr.push(idProduct);
-
-
-//     console.log(idProductArr);
-
-//     setStorage(idProductArr);
-
-// }
+function onModalWishlistBtnClick() {
+    setStorage(idProduct);
+}

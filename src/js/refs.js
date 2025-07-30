@@ -9,4 +9,5 @@ export const refs = {
     modalProduct: document.querySelector('.modal-product'),
     modalCloseBtn: document.querySelector('.modal__close-btn'),
     modalWishlistBtn: document.querySelector('.modal-product__btn--wishlist'),
+    navCountWishlist: document.querySelector('[data-wishlist-count]'),
 }
