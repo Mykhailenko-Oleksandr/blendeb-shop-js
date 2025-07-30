@@ -1,1 +1,6 @@
-//Логіка сторінки Wishlist
+import { handlerProductsList, initHomePage, initWishlistPage } from "./js/handlers";
+import { refs } from "./js/refs";
+
+
+document.addEventListener('DOMContentLoaded', initWishlistPage);
+refs.productsList.addEventListener('click', handlerProductsList);

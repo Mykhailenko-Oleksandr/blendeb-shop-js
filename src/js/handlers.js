@@ -10,8 +10,10 @@ let textCategory = 'all';
 let isSearch = false;
 let searchValue = null;
 let idProduct = null;
+export let isWishlistPage = false;
 
 export async function initHomePage() {
+    isWishlistPage = false;
     refs.navCountWishlist.textContent = idWishlistArr.length;
     refs.navCountCart.textContent = idCartArr.length;
 
@@ -33,6 +35,25 @@ export async function initHomePage() {
     }
 }
 
+export async function initWishlistPage() {
+    isWishlistPage = true;
+    refs.navCountWishlist.textContent = idWishlistArr.length;
+    refs.navCountCart.textContent = idCartArr.length;
+
+    try {
+        const fetchWishlist = idWishlistArr.map(async id => {
+            return await getIdProduct(id);
+        })
+        Promise.all(fetchWishlist)
+            .then(products => {
+                renderProducts(products);
+            })
+            .catch(error => console.log(error))
+    } catch (error) {
+        console.log(error);
+    }
+}
+
 export async function handlerCategoriesList(event) {
     currentPage = 1;
     isSearch = false;
@@ -44,7 +65,7 @@ export async function handlerCategoriesList(event) {
     loadMoreBtnIsHidden();
     refs.divNotFound.classList.remove('not-found--visible');
     removeClassCategory('categories__btn--active');
-    event.target.classList.add('categories__btn--active')
+    event.target.classList.add('categories__btn--active');
 
     textCategory = event.target.textContent;
 
@@ -120,15 +141,15 @@ export async function handlerProductsList(event) {
     if (!event.target.closest('.products__item')) {
         return;
     }
-    idProduct = event.target.closest('.products__item').dataset.id
+    idProduct = event.target.closest('.products__item').dataset.id;
 
     try {
         const product = await getIdProduct(idProduct);
         renderModalProduct(product);
         modalOpen(idProduct);
         refs.modalCloseBtn.addEventListener('click', modalClose);
-        refs.modalWishlistBtn.addEventListener('click', onModalWishlistBtnClick)
-        refs.modalCartBtn.addEventListener('click', onModalCartBtnClick)
+        refs.modalWishlistBtn.addEventListener('click', onModalWishlistBtnClick);
+        refs.modalCartBtn.addEventListener('click', onModalCartBtnClick);
     } catch (error) {
         console.log(error);
     }

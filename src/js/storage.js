@@ -1,5 +1,7 @@
+import { initWishlistPage, isWishlistPage } from "./handlers";
 import { refs } from "./refs";
-// idProductArr
+import { clearProducts } from "./render-function";
+
 export const idWishlistArr = JSON.parse(localStorage.getItem('wishlist')) || [];
 export const idCartArr = JSON.parse(localStorage.getItem('cart')) || [];
 
@@ -11,15 +13,25 @@ export function setStorageWishlist(id) {
         refs.modalWishlistBtn.textContent = 'Add to Wishlist';
 
         refs.navCountWishlist.textContent = idWishlistArr.length;
+
+        if (isWishlistPage) {
+            clearProducts();
+            initWishlistPage();
+        }
         return;
     }
 
-    idWishlistArr.push(id)
+    idWishlistArr.push(id);
     refs.modalWishlistBtn.textContent = 'Remove from Wishlist';
 
     refs.navCountWishlist.textContent = idWishlistArr.length;
 
-    localStorage.setItem('wishlist', JSON.stringify(idWishlistArr))
+    localStorage.setItem('wishlist', JSON.stringify(idWishlistArr));
+
+    if (isWishlistPage) {
+        clearProducts();
+        initWishlistPage();
+    }
 }
 
 export function setStorageCart(id) {
@@ -33,26 +45,10 @@ export function setStorageCart(id) {
         return;
     }
 
-    idCartArr.push(id)
+    idCartArr.push(id);
     refs.modalCartBtn.textContent = 'Remove from Cart';
 
     refs.navCountCart.textContent = idCartArr.length;
 
-    localStorage.setItem('cart', JSON.stringify(idCartArr))
+    localStorage.setItem('cart', JSON.stringify(idCartArr));
 }
-
-
-
-// export function getStorage() {
-//     const wishlist = localStorage.getItem('wishlist');
-//     const parseWishlist = JSON.parse(wishlist)
-//     return parseWishlist
-// }
-
-
-
-
-// export function getStorage() {
-//     const wishlist = localStorage.getItem('wishlist');
-//     return wishlist
-// }
