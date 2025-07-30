@@ -1,4 +1,5 @@
-import { loadMoreBtnIsHidden, loadMoreBtnIsVisible, removeClassCategory } from "./helpers";
+import { hideLoader, lastPageInforming, loadMoreBtnIsHidden, loadMoreBtnIsVisible, removeClassCategory, showLoader } from "./helpers";
+import { iziToastError, iziToastSuccess } from "./izi-toast";
 import { modalClose, modalOpen, } from "./modal";
 import { getCategories, getIdProduct, getOneCategory, getProducts, getSearchProduct } from "./products-api";
 import { refs } from "./refs";
@@ -11,9 +12,13 @@ let isSearch = false;
 let searchValue = null;
 let idProduct = null;
 export let isWishlistPage = false;
+export let isCartPage = false;
 
 export async function initHomePage() {
     isWishlistPage = false;
+    isCartPage = false;
+
+    showLoader();
     refs.navCountWishlist.textContent = idWishlistArr.length;
     refs.navCountCart.textContent = idCartArr.length;
 
@@ -24,19 +29,24 @@ export async function initHomePage() {
             loadMoreBtnIsVisible();
         }
     } catch (error) {
-        console.log(error);
+        iziToastError(error.message);
     }
 
     try {
         const categories = ['all', ...await getCategories()];
         renderCategories(categories);
     } catch (error) {
-        console.log(error);
+        iziToastError(error.message);
     }
+    hideLoader();
 }
 
 export async function initWishlistPage() {
     isWishlistPage = true;
+    isCartPage = false;
+
+    showLoader();
+    refs.divNotFound.classList.remove('not-found--visible');
     refs.navCountWishlist.textContent = idWishlistArr.length;
     refs.navCountCart.textContent = idCartArr.length;
 
@@ -44,13 +54,57 @@ export async function initWishlistPage() {
         const fetchWishlist = idWishlistArr.map(async id => {
             return await getIdProduct(id);
         })
-        Promise.all(fetchWishlist)
+        await Promise.all(fetchWishlist)
             .then(products => {
                 renderProducts(products);
+
+                if (products.length === 0) {
+                    refs.divNotFound.classList.add('not-found--visible');
+                    return;
+                }
             })
-            .catch(error => console.log(error))
+            .catch(error => iziToastError(error.message))
     } catch (error) {
-        console.log(error);
+        iziToastError(error.message);
+    } finally {
+        hideLoader();
+    }
+
+}
+
+export async function initCartPage() {
+    isWishlistPage = false;
+    isCartPage = true;
+    console.log(refs.loader);
+
+    showLoader();
+    refs.divNotFound.classList.remove('not-found--visible');
+    refs.navCountWishlist.textContent = idWishlistArr.length;
+    refs.navCountCart.textContent = idCartArr.length;
+    refs.sidebarCountCart.textContent = idCartArr.length;
+
+    try {
+        const fetchCart = idCartArr.map(async id => {
+            return await getIdProduct(id);
+        })
+        await Promise.all(fetchCart)
+            .then(products => {
+                renderProducts(products);
+
+                const totalCents = products.reduce((acc, product) => acc + Math.round(product.price * 100), 0)
+                const totalPrice = totalCents / 100;
+                refs.sidebarPriceCart.textContent = `$ ${totalPrice}`;
+
+                if (products.length === 0) {
+                    refs.divNotFound.classList.add('not-found--visible');
+                    return;
+                }
+            })
+            .catch(error => { iziToastError(error.message); })
+    } catch (error) {
+        iziToastError(error.message);
+    } finally {
+        hideLoader();
     }
 }
 
@@ -66,6 +120,7 @@ export async function handlerCategoriesList(event) {
     refs.divNotFound.classList.remove('not-found--visible');
     removeClassCategory('categories__btn--active');
     event.target.classList.add('categories__btn--active');
+    showLoader();
 
     textCategory = event.target.textContent;
 
@@ -77,7 +132,9 @@ export async function handlerCategoriesList(event) {
                 loadMoreBtnIsVisible();
             }
         } catch (error) {
-            console.log(error);
+            iziToastError(error.message);
+        } finally {
+            hideLoader();
         }
         return;
     }
@@ -94,12 +151,14 @@ export async function handlerCategoriesList(event) {
             loadMoreBtnIsVisible();
         }
     } catch (error) {
-        console.log(error);
-
+        iziToastError(error.message);
+    } finally {
+        hideLoader();
     }
 }
 
 export async function handlerLoadMoreBtn() {
+    showLoader();
     currentPage++;
     loadMoreBtnIsHidden();
     if (textCategory === 'all') {
@@ -109,8 +168,12 @@ export async function handlerLoadMoreBtn() {
             if (total > 12 * currentPage) {
                 loadMoreBtnIsVisible();
             }
+
+            lastPageInforming(total, currentPage);
         } catch (error) {
-            console.log(error);
+            iziToastError(error.message);
+        } finally {
+            hideLoader();
         }
         return;
     }
@@ -121,8 +184,12 @@ export async function handlerLoadMoreBtn() {
             if (total > 12 * currentPage) {
                 loadMoreBtnIsVisible();
             }
+
+            lastPageInforming(total, currentPage);
         } catch (error) {
-            console.log(error);
+            iziToastError(error.message);
+        } finally {
+            hideLoader();
         }
         return;
     }
@@ -132,8 +199,12 @@ export async function handlerLoadMoreBtn() {
         if (total > 12 * currentPage) {
             loadMoreBtnIsVisible();
         }
+
+        lastPageInforming(total, currentPage);
     } catch (error) {
-        console.log(error);
+        iziToastError(error.message);
+    } finally {
+        hideLoader();
     }
 }
 
@@ -141,17 +212,26 @@ export async function handlerProductsList(event) {
     if (!event.target.closest('.products__item')) {
         return;
     }
+    showLoader()
     idProduct = event.target.closest('.products__item').dataset.id;
 
     try {
         const product = await getIdProduct(idProduct);
+
         renderModalProduct(product);
         modalOpen(idProduct);
+
+
+        const modalBuyBtn = document.querySelector('.modal-product__buy-btn');
+
+        modalBuyBtn.addEventListener('click', handlerBuyProductsBtn);
         refs.modalCloseBtn.addEventListener('click', modalClose);
         refs.modalWishlistBtn.addEventListener('click', onModalWishlistBtnClick);
         refs.modalCartBtn.addEventListener('click', onModalCartBtnClick);
     } catch (error) {
-        console.log(error);
+        iziToastError(error.message);
+    } finally {
+        hideLoader()
     }
 }
 
@@ -161,7 +241,7 @@ export async function handlerSearchForm(event) {
     searchValue = event.target.elements.searchValue.value.trim().toLowerCase();
     textCategory = searchValue;
     if (!searchValue) {
-        alert('Введіть пошукове слово');
+        iziToastError("You didn't enter anything in the search field")
         return;
     }
 
@@ -169,6 +249,7 @@ export async function handlerSearchForm(event) {
     clearProducts();
     loadMoreBtnIsHidden();
     refs.divNotFound.classList.remove('not-found--visible');
+    showLoader();
 
     try {
         const { products, total } = await getSearchProduct(searchValue, currentPage);
@@ -183,14 +264,17 @@ export async function handlerSearchForm(event) {
         }
 
     } catch (error) {
-        console.log(error);
+        iziToastError(error.message);
+    } finally {
+        hideLoader();
     }
 }
 
-export async function handlerformBtnClearValue() {
+export async function handlerFormBtnClearValue() {
     refs.searchForm.elements.searchValue.value = '';
     clearProducts();
     loadMoreBtnIsHidden();
+    showLoader();
     try {
         const { products, total } = await getProducts(currentPage);
         renderProducts(products);
@@ -198,7 +282,9 @@ export async function handlerformBtnClearValue() {
             loadMoreBtnIsVisible();
         }
     } catch (error) {
-        console.log(error);
+        iziToastError(error.message);
+    } finally {
+        hideLoader();
     }
 }
 
@@ -208,4 +294,8 @@ function onModalWishlistBtnClick() {
 
 function onModalCartBtnClick() {
     setStorageCart(idProduct);
+}
+
+export function handlerBuyProductsBtn() {
+    iziToastSuccess('You have successfully made a purchase')
 }

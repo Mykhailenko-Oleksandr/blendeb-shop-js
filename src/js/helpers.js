@@ -1,3 +1,4 @@
+import { iziToastInforming } from "./izi-toast";
 import { refs } from "./refs";
 
 export function removeClassCategory(className) {
@@ -14,4 +15,18 @@ export function loadMoreBtnIsVisible() {
 
 export function loadMoreBtnIsHidden() {
     refs.loadMoreBtn.classList.add('is-hidden');
+}
+
+export function lastPageInforming(total, currentPage) {
+    if (total <= 12 * currentPage) {
+        iziToastInforming("Last page");
+    }
+}
+
+export function showLoader() {
+    refs.loader.classList.add('is-visible');
+}
+
+export function hideLoader() {
+    refs.loader.classList.remove('is-visible');
 }

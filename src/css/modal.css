@@ -183,6 +183,17 @@
   border-color: var(--border-color);
 }
 
+.modal-product__buy-btn {
+  background: white;
+  color: #ff6b0a;
+  border: 2px solid #ff6b0a;
+}
+
+.modal-product__buy-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(255, 107, 10, 0.1);
+}
+
 .modal-product__btn--cart {
   background: #ff6b0a;
   color: white;

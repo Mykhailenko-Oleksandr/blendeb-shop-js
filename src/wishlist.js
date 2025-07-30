@@ -1,4 +1,4 @@
-import { handlerProductsList, initHomePage, initWishlistPage } from "./js/handlers";
+import { handlerProductsList, initWishlistPage } from "./js/handlers";
 import { refs } from "./js/refs";
 
 

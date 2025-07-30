@@ -1,4 +1,4 @@
-import { initWishlistPage, isWishlistPage } from "./handlers";
+import { initCartPage, initWishlistPage, isCartPage, isWishlistPage } from "./handlers";
 import { refs } from "./refs";
 import { clearProducts } from "./render-function";
 
@@ -42,6 +42,11 @@ export function setStorageCart(id) {
         refs.modalCartBtn.textContent = 'Add to cart';
 
         refs.navCountCart.textContent = idCartArr.length;
+
+        if (isCartPage) {
+            clearProducts();
+            initCartPage();
+        }
         return;
     }
 
@@ -51,4 +56,9 @@ export function setStorageCart(id) {
     refs.navCountCart.textContent = idCartArr.length;
 
     localStorage.setItem('cart', JSON.stringify(idCartArr));
+
+    if (isCartPage) {
+        clearProducts();
+        initCartPage();
+    }
 }
