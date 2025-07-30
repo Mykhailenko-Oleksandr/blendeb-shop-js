@@ -3,7 +3,7 @@ import { modalClose, modalOpen, } from "./modal";
 import { getCategories, getIdProduct, getOneCategory, getProducts, getSearchProduct } from "./products-api";
 import { refs } from "./refs";
 import { clearProducts, renderCategories, renderModalProduct, renderProducts } from "./render-function";
-import { idProductArr, setStorage } from "./storage";
+import { idCartArr, idWishlistArr, setStorageCart, setStorageWishlist } from "./storage";
 
 let currentPage = 1;
 let textCategory = 'all';
@@ -12,7 +12,9 @@ let searchValue = null;
 let idProduct = null;
 
 export async function initHomePage() {
-    refs.navCountWishlist.textContent = idProductArr.length;
+    refs.navCountWishlist.textContent = idWishlistArr.length;
+    refs.navCountCart.textContent = idCartArr.length;
+
     try {
         const { products, total } = await getProducts(currentPage);
         renderProducts(products);
@@ -126,6 +128,7 @@ export async function handlerProductsList(event) {
         modalOpen(idProduct);
         refs.modalCloseBtn.addEventListener('click', modalClose);
         refs.modalWishlistBtn.addEventListener('click', onModalWishlistBtnClick)
+        refs.modalCartBtn.addEventListener('click', onModalCartBtnClick)
     } catch (error) {
         console.log(error);
     }
@@ -179,5 +182,9 @@ export async function handlerformBtnClearValue() {
 }
 
 function onModalWishlistBtnClick() {
-    setStorage(idProduct);
+    setStorageWishlist(idProduct);
+}
+
+function onModalCartBtnClick() {
+    setStorageCart(idProduct);
 }

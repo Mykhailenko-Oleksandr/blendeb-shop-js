@@ -9,5 +9,7 @@ export const refs = {
     modalProduct: document.querySelector('.modal-product'),
     modalCloseBtn: document.querySelector('.modal__close-btn'),
     modalWishlistBtn: document.querySelector('.modal-product__btn--wishlist'),
+    modalCartBtn: document.querySelector('.modal-product__btn--cart'),
     navCountWishlist: document.querySelector('[data-wishlist-count]'),
+    navCountCart: document.querySelector('[data-cart-count]'),
 }
