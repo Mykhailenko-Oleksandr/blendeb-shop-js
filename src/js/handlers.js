@@ -1,4 +1,4 @@
-import { hideLoader, lastPageInforming, loadMoreBtnIsHidden, loadMoreBtnIsVisible, removeClassCategory, showLoader } from "./helpers";
+import { hideLoader, lastPageInforming, loadMoreBtnIsHidden, loadMoreBtnIsVisible, removeClassCategory, scrollByTop, showLoader } from "./helpers";
 import { iziToastError, iziToastSuccess } from "./izi-toast";
 import { modalClose, modalOpen, } from "./modal";
 import { getCategories, getIdProduct, getOneCategory, getProducts, getSearchProduct } from "./products-api";
@@ -13,6 +13,7 @@ let searchValue = null;
 let idProduct = null;
 export let isWishlistPage = false;
 export let isCartPage = false;
+let isTopPage = true;
 
 export async function initHomePage() {
     isWishlistPage = false;
@@ -23,8 +24,16 @@ export async function initHomePage() {
     refs.navCountCart.textContent = idCartArr.length;
 
     try {
+        const categories = ['all', ...await getCategories()];
+        renderCategories(categories);
+    } catch (error) {
+        iziToastError(error.message);
+    }
+
+    try {
         const { products, total } = await getProducts(currentPage);
         renderProducts(products);
+
         if (total > 12) {
             loadMoreBtnIsVisible();
         }
@@ -32,12 +41,7 @@ export async function initHomePage() {
         iziToastError(error.message);
     }
 
-    try {
-        const categories = ['all', ...await getCategories()];
-        renderCategories(categories);
-    } catch (error) {
-        iziToastError(error.message);
-    }
+
     hideLoader();
 }
 
@@ -75,7 +79,6 @@ export async function initWishlistPage() {
 export async function initCartPage() {
     isWishlistPage = false;
     isCartPage = true;
-    console.log(refs.loader);
 
     showLoader();
     refs.divNotFound.classList.remove('not-found--visible');
@@ -299,3 +302,18 @@ function onModalCartBtnClick() {
 export function handlerBuyProductsBtn() {
     iziToastSuccess('You have successfully made a purchase')
 }
+
+export function handlerScroll() {
+
+    if (window.scrollY > 400 && isTopPage === true) {
+        isTopPage = false;
+        refs.scrollTopBtn.classList.add('scroll-top-btn--visible');
+        refs.scrollTopBtn.addEventListener('click', scrollByTop);
+
+    } else if (window.scrollY < 400 && isTopPage === false) {
+        isTopPage = true;
+        refs.scrollTopBtn.removeEventListener('click', scrollByTop);
+        refs.scrollTopBtn.classList.remove('scroll-top-btn--visible');
+    }
+}
+

@@ -30,3 +30,7 @@ export function showLoader() {
 export function hideLoader() {
     refs.loader.classList.remove('is-visible');
 }
+
+export function scrollByTop() {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}

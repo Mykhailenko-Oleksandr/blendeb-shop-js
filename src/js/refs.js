@@ -16,4 +16,5 @@ export const refs = {
     sidebarPriceCart: document.querySelector('[data-price]'),
     buyProductsBtn: document.querySelector('.cart-summary__btn'),
     loader: document.querySelector('.loader'),
+    scrollTopBtn: document.querySelector('.scroll-top-btn'),
 }
