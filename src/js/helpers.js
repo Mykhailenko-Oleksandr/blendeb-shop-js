@@ -34,3 +34,13 @@ export function hideLoader() {
 export function scrollByTop() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
+
+export function auditTheme() {
+    const themeStorage = localStorage.getItem('theme') || '';
+
+    if (themeStorage === '') {
+        return;
+    } else {
+        refs.body.classList.add('dark-theme');
+    }
+}

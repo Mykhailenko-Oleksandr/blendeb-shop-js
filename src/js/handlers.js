@@ -1,10 +1,10 @@
-import { hideLoader, lastPageInforming, loadMoreBtnIsHidden, loadMoreBtnIsVisible, removeClassCategory, scrollByTop, showLoader } from "./helpers";
+import { auditTheme, hideLoader, lastPageInforming, loadMoreBtnIsHidden, loadMoreBtnIsVisible, removeClassCategory, scrollByTop, showLoader } from "./helpers";
 import { iziToastError, iziToastSuccess } from "./izi-toast";
 import { modalClose, modalOpen, } from "./modal";
 import { getCategories, getIdProduct, getOneCategory, getProducts, getSearchProduct } from "./products-api";
 import { refs } from "./refs";
 import { clearProducts, renderCategories, renderModalProduct, renderProducts } from "./render-function";
-import { idCartArr, idWishlistArr, setStorageCart, setStorageWishlist } from "./storage";
+import { idCartArr, idWishlistArr, setStorageCart, setStorageTheme, setStorageWishlist } from "./storage";
 
 let currentPage = 1;
 let textCategory = 'all';
@@ -19,6 +19,7 @@ export async function initHomePage() {
     isWishlistPage = false;
     isCartPage = false;
 
+    auditTheme();
     showLoader();
     refs.navCountWishlist.textContent = idWishlistArr.length;
     refs.navCountCart.textContent = idCartArr.length;
@@ -49,6 +50,7 @@ export async function initWishlistPage() {
     isWishlistPage = true;
     isCartPage = false;
 
+    auditTheme();
     showLoader();
     refs.divNotFound.classList.remove('not-found--visible');
     refs.navCountWishlist.textContent = idWishlistArr.length;
@@ -80,6 +82,7 @@ export async function initCartPage() {
     isWishlistPage = false;
     isCartPage = true;
 
+    auditTheme();
     showLoader();
     refs.divNotFound.classList.remove('not-found--visible');
     refs.navCountWishlist.textContent = idWishlistArr.length;
@@ -317,3 +320,14 @@ export function handlerScroll() {
     }
 }
 
+export function hendlerThemeToggleBtn() {
+    const themeStorage = localStorage.getItem('theme') || '';
+
+    if (themeStorage === '') {
+        setStorageTheme('add');
+        refs.body.classList.add('dark-theme');
+    } else {
+        setStorageTheme('remove');
+        refs.body.classList.remove('dark-theme');
+    }
+}

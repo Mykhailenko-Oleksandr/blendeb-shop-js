@@ -1,4 +1,5 @@
 export const refs = {
+    body: document.querySelector('body'),
     categoriesList: document.querySelector('.categories'),
     productsList: document.querySelector('.products'),
     divNotFound: document.querySelector('.not-found'),
@@ -17,4 +18,5 @@ export const refs = {
     buyProductsBtn: document.querySelector('.cart-summary__btn'),
     loader: document.querySelector('.loader'),
     scrollTopBtn: document.querySelector('.scroll-top-btn'),
+    themeToggleBtn: document.querySelector('.theme-toggle-btn'),
 }

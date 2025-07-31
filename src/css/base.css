@@ -16,7 +16,7 @@
   --border-color: #e0e0e0;
   --accent-color: #ff6b0a;
 
-  [data-theme='dark'] {
+  .dark-theme {
     --primary-text-color: #ffffff;
     --secondary-text-color: #adadad;
     --bg-color: #121212;

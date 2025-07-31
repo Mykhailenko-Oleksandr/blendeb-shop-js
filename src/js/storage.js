@@ -62,3 +62,12 @@ export function setStorageCart(id) {
         initCartPage();
     }
 }
+
+export function setStorageTheme(action) {
+
+    if (action === 'add') {
+        localStorage.setItem('theme', 'dark');
+    } else {
+        localStorage.removeItem('theme');
+    }
+}
